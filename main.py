@@ -14,14 +14,15 @@ def shorten_link(vk_token, url):
     url = 'https://api.vk.ru/method/utils.getShortLink'
     response = requests.post(url, data=payload)
     response.raise_for_status()
-    d = response.json()
-    print(d['response']['short_url'])
+    return response.json()['response']['short_url']
 
 
 def main():
     load_dotenv()
     vk_token = os.getenv('VK_TOKEN')
 
+    url = input('Введите ссылку, которую хотите сократить: ')
+    print('Сокращенная ссылка: ', shorten_link(vk_token, url))
 
 if __name__ == '__main__':
     main()
