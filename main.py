@@ -35,6 +35,15 @@ def count_clicks(vk_token, short_link):
     return response.json()['response']['stats'][0]['views']
 
 
+def is_shorten_link(url):
+    parsed = urlparse(url)
+    if parsed.netloc == 'vk.cc':
+        print('Число переходов по ссылке: ',count_clicks(os.getenv('VK_TOKEN'), url))
+    else:
+        print('Ссылка не короткая!')
+        print('Короткая ссылка: ', shorten_link(os.getenv('VK_TOKEN'), url))
+
+
 def main():
     load_dotenv()
     vk_token = os.getenv('VK_TOKEN')
@@ -49,6 +58,8 @@ def main():
         print('Число переходов по ссылке: ', clicks_count)
     except requests.exceptions.HTTPError:
         print('Неправильная ссылка ')
+
+    is_shorten_link(url)
 
 
 if __name__ == '__main__':
