@@ -25,23 +25,21 @@ def count_clicks(vk_token, short_link):
         "v": "5.199",
         'key': parsed.path[1],
         'access_token': vk_token,
-        'interval': 'forever'
+        'interval': 'forever',
     }
     url = 'https://api.vk.ru/method/utils.getLinkStats'
 
     response = requests.post(url, data=payload)
     if response.json().get('error'):
         raise requests.exceptions.HTTPError
+    if not response.json()['response']['stats']:
+        return 0
     return response.json()['response']['stats'][0]['views']
 
 
 def is_shorten_link(url):
     parsed = urlparse(url)
-    if parsed.netloc == 'vk.cc':
-        print('Число переходов по ссылке: ',count_clicks(os.getenv('VK_TOKEN'), url))
-    else:
-        print('Ссылка не короткая!')
-        print('Короткая ссылка: ', shorten_link(os.getenv('VK_TOKEN'), url))
+    return parsed.netloc == 'vk.cc'
 
 
 def main():
@@ -51,15 +49,12 @@ def main():
     url = input('Введите ссылку, которую хотите сократить: ')
 
     try:
-        short_link = shorten_link(vk_token, url)
-        print('Сокращенная ссылка: ', short_link)
-
-        clicks_count = count_clicks(vk_token, short_link)
-        print('Число переходов по ссылке: ', clicks_count)
+        if is_shorten_link(url):
+            print('Число переходов по ссылке: ', count_clicks(vk_token, url))
+        else:
+            print('Короткая ссылка: ', shorten_link(vk_token, url))
     except requests.exceptions.HTTPError:
-        print('Неправильная ссылка ')
-
-    is_shorten_link(url)
+        print('Неправильная ссылка!')
 
 
 if __name__ == '__main__':
