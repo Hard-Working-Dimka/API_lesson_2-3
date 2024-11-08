@@ -26,7 +26,7 @@ def count_clicks(vk_token, short_link):
     disassembled_url = urlparse(short_link)
     payload = {
         "v": "5.199",
-        'key': disassembled_url.path[1],
+        'key': disassembled_url.path[1:],
         'access_token': vk_token,
         'interval': 'forever',
     }
@@ -43,9 +43,20 @@ def count_clicks(vk_token, short_link):
     return decoded_response['response']['stats'][0]['views']
 
 
-def is_shorten_link(url):
+def is_shorten_link(vk_token, url):
     disassembled_url = urlparse(url)
-    return disassembled_url.netloc == 'vk.cc'
+    payload = {
+        "v": "5.199",
+        'key': disassembled_url.path[1:],
+        'access_token': vk_token,
+        'interval': 'forever',
+    }
+    url = 'https://api.vk.ru/method/utils.getLinkStats'
+
+    response = requests.post(url, data=payload)
+    response.raise_for_status()
+    decoded_response = response.json()
+    return not decoded_response.get('error')
 
 
 def main():
@@ -55,7 +66,7 @@ def main():
     url = input('Введите ссылку, которую хотите сократить: ')
 
     try:
-        if is_shorten_link(url):
+        if is_shorten_link(vk_token, url):
             print('Число переходов по ссылке: ', count_clicks(vk_token, url))
         else:
             print('Короткая ссылка: ', shorten_link(vk_token, url))
