@@ -14,37 +14,43 @@ def shorten_link(vk_token, url):
     url = 'https://api.vk.ru/method/utils.getShortLink'
 
     response = requests.post(url, data=payload)
-    if response.json().get('error'):
+    response.raise_for_status()
+    decoded_response = response.json()
+
+    if decoded_response.get('error'):
         raise requests.exceptions.HTTPError
-    return response.json()['response']['short_url']
+    return decoded_response['response']['short_url']
 
 
 def count_clicks(vk_token, short_link):
-    parsed = urlparse(short_link)
+    disassembled_url = urlparse(short_link)
     payload = {
         "v": "5.199",
-        'key': parsed.path[1],
+        'key': disassembled_url.path[1],
         'access_token': vk_token,
         'interval': 'forever',
     }
     url = 'https://api.vk.ru/method/utils.getLinkStats'
 
     response = requests.post(url, data=payload)
-    if response.json().get('error'):
+    response.raise_for_status()
+    decoded_response = response.json()
+
+    if decoded_response.get('error'):
         raise requests.exceptions.HTTPError
-    if not response.json()['response']['stats']:
+    if not decoded_response['response']['stats']:
         return 0
-    return response.json()['response']['stats'][0]['views']
+    return decoded_response['response']['stats'][0]['views']
 
 
 def is_shorten_link(url):
-    parsed = urlparse(url)
-    return parsed.netloc == 'vk.cc'
+    disassembled_url = urlparse(url)
+    return disassembled_url.netloc == 'vk.cc'
 
 
 def main():
     load_dotenv()
-    vk_token = os.getenv('VK_TOKEN')
+    vk_token = os.environ['VK_TOKEN']
 
     url = input('Введите ссылку, которую хотите сократить: ')
 
