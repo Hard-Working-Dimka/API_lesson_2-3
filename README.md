@@ -8,7 +8,7 @@
 >https://dvmn.org/encyclopedia/python_basic_level/what_are_methods/
 
 После обрезки:
-> https://vk.cc/6iXcdC
+> https://vk.cc/cEYXxG
 
 Такие ссылки радуют глаз и отлично вписываются в любой текст, а также позволяют отследить количество переходов по ним.
 
@@ -40,7 +40,8 @@ python main.py link
 При вводе неправильной ссылке на экране появится сообщение "Неправильная ссылка!"
 
 Пример работы:
-
+![image](https://github.com/user-attachments/assets/314baec6-1e2e-49a9-afdd-7750053de263)
+![image](https://github.com/user-attachments/assets/fc536ece-06d0-40e3-ae21-b5a1fbad3952)
 
 ### Цель проекта
 
